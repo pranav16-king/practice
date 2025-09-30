@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaBot Mission Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/main/style.css">
+  <style>
+    /* Animated Background */
+    main {
+ 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: lunar-pan 40s ease-in-out infinite alternate;
+    }
+
+    @keyframes lunar-pan {
+      0% {
+        background-size: 100%;
+        background-position: center;
+      }
+
+      50% {
+        background-size: 115%;
+        background-position: top center;
+      }
+
+      100% {
+        background-size: 100%;
+        background-position: center;
+      }
+    }
+
+    /* Card animation */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Counter animation */
+    .counter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #66fcf1;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex bg-gray-900 text-gray-100 min-h-screen">
+
+  <!-- Sidebar -->
+  <header id="sidebar" class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-cyan-400 w-60 min-h-screen fixed flex flex-col items-center p-6 shadow-lg transition-all duration-300">
+    <button id="toggleSidebar" class="toggle-btn text-4xl mb-6 cursor-pointer">☰</button>
+    <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
+    <div class="flex flex-col space-y-2 w-full px-2">
+      <a href="/home/main.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🏠</span><span class="label">Home</span>
+      </a>
+      <a href="/navigation/navigation.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🤖</span><span class="label">Navigation</span>
+      </a>
+      <a href="/mapping/maping.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🗺️</span><span class="label">Mapping</span>
+      </a>
+      <a href="/maintainunace/maintainunace.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🔧</span><span class="label">Maintenance</span>
+      </a>
+      <a href="/alart/alart.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚠️</span><span class="label">Alerts</span>
+      </a>
+      <a href="/setting/setting.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚙️</span><span class="label">Settings</span>
+      </a>
+    </div>
+
+    <div class="profile mt-auto w-full flex items-center p-3 rounded-lg bg-gray-800/50 hover:scale-105 transition">
+      <img src="/static/images_index/profile_avatar.png" alt="Profile" class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold">Welcome, {{name}}</span>
+        <a href="/logout">
+          <button class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 ml-60 p-6 min-h-screen">
+   <!-- LunaBot Alert Section -->
+
+<div class="min-h-screen bg-[#0B0C10] flex items-center justify-center py-8 px-2">
+  <div class="w-full max-w-2xl bg-[#C5C6C7] rounded-2xl shadow-2xl p-6">
+    <h2 class="text-2xl font-bold text-white mb-4 text-center tracking-wide">LunaBot Real-Time Alerts</h2>
+    <div id="alertPanel" class="space-y-4 max-h-96 overflow-y-auto pr-2">
+      <!-- Alerts will be dynamically injected here -->
+    </div>
+    <div class="mt-5 flex justify-end space-x-3">
+      <button id="resolveAll" class="px-4 py-2 rounded-lg font-bold bg-[#32CD32] text-white hover:bg-[#00BFFF] transition shadow">
+        Mark All as Resolved
+      </button>
+      <button id="clearAll" class="px-4 py-2 rounded-lg font-bold bg-[#FF4500] text-white hover:bg-[#FFD700] transition shadow">
+        Dismiss All
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Alert Icons (SVG) -->
+<svg class="hidden">
+  <symbol id="icon-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="#00BFFF"/>
+    <text x="12" y="16" font-size="12" text-anchor="middle" fill="#FFFFFF" font-family="Arial" font-weight="bold">i</text>
+  </symbol>
+  <symbol id="icon-warning" viewBox="0 0 24 24">
+    <polygon points="12,2 22,20 2,20" fill="#FFD700"/>
+    <text x="12" y="16" font-size="12" text-anchor="middle" fill="#0B0C10" font-family="Arial" font-weight="bold">!</text>
+  </symbol>
+  <symbol id="icon-hazard" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="#FF4500"/>
+    <text x="12" y="16" font-size="12" text-anchor="middle" fill="#FFFFFF" font-family="Arial" font-weight="bold">!</text>
+  </symbol>
+  <symbol id="icon-safe" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="#32CD32"/>
+    <text x="12" y="16" font-size="14" text-anchor="middle" fill="#FFFFFF" font-family="Arial" font-weight="bold">&#10003;</text>
+  </symbol>
+</svg>
+
+<script>
+const ALERT_TYPES = {
+  info: {
+    color: "bg-[#00BFFF]",
+    svg: "icon-info",
+    border: "border-[#00BFFF]",
+    sound: null
+  },
+  warning: {
+    color: "bg-[#FFD700]",
+    svg: "icon-warning",
+    border: "border-[#FFD700]",
+    sound: null
+  },
+  hazard: {
+    color: "bg-[#FF4500]",
+    svg: "icon-hazard",
+    border: "border-[#FF4500]",
+    sound: "critical.mp3"
+  },
+  safe: {
+    color: "bg-[#32CD32]",
+    svg: "icon-safe",
+    border: "border-[#32CD32]",
+    sound: null
+  }
+};
+
+let alerts = [];
+let alertId = 1;
+
+// Utility: Format timestamp
+function formatTime(ts) {
+  const date = new Date(ts);
+  return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+}
+
+// Utility: Play sound for critical alert
+function playCriticalSound() {
+  // Minimal: Only if sound file exists, otherwise skip
+  const audio = new Audio("https://cdn.pixabay.com/audio/2022/08/20/audio_123456.mp3"); // Replace with your own
+  audio.play();
+}
+
+// Render alerts
+function renderAlerts() {
+  const panel = document.getElementById("alertPanel");
+  panel.innerHTML = "";
+  alerts.forEach(alert => {
+    const type = ALERT_TYPES[alert.type] || ALERT_TYPES.info;
+    const slideClass = alert.slideIn ? "animate-slideIn" : "";
+    const dismissClass = alert.dismissed ? "opacity-50 line-through" : "";
+    panel.insertAdjacentHTML("beforeend", `
+      <div class="flex items-center space-x-4 rounded-xl p-4 shadow transition-all duration-300 cursor-pointer ${type.color} ${type.border} border-l-8 group ${slideClass} ${dismissClass}">
+        <svg width="36" height="36" class="flex-shrink-0"><use href="#${type.svg}" /></svg>
+        <div class="flex-1">
+          <div class="font-semibold text-white">${alert.title}</div>
+          <div class="text-sm text-[#0B0C10]">${alert.message}</div>
+          <div class="text-xs text-white mt-1 opacity-80">${formatTime(alert.timestamp)}</div>
+        </div>
+        <button onclick="dismissAlert(${alert.id})"
+          class="ml-2 px-2 py-1 rounded bg-[#C5C6C7] text-[#0B0C10] hover:bg-white hover:text-[#FF4500] transition font-bold shadow"
+          title="Dismiss Alert">
+          &times;
+        </button>
+        ${!alert.resolved && alert.type !== "safe" ? `<button onclick="resolveAlert(${alert.id})"
+          class="ml-2 px-2 py-1 rounded bg-[#32CD32] text-white hover:bg-[#00BFFF] transition font-bold shadow"
+          title="Mark as Resolved">
+          &#10003;
+        </button>` : ""}
+      </div>
+    `);
+  });
+}
+
+// Dismiss alert
+function dismissAlert(id) {
+  const alert = alerts.find(a => a.id === id);
+  if (alert) {
+    alert.dismissed = true;
+    renderAlerts();
+  }
+}
+
+// Resolve alert
+function resolveAlert(id) {
+  const alert = alerts.find(a => a.id === id);
+  if (alert) {
+    alert.resolved = true;
+    alert.type = "safe";
+    alert.title = "Resolved";
+    alert.message = "Alert has been marked as resolved.";
+    renderAlerts();
+  }
+}
+
+// Add new alert (simulate incoming)
+function addAlert(type, title, message) {
+  const alert = {
+    id: alertId++,
+    type,
+    title,
+    message,
+    timestamp: Date.now(),
+    resolved: false,
+    dismissed: false,
+    slideIn: true
+  };
+  alerts.unshift(alert);
+  renderAlerts();
+  setTimeout(() => {
+    alert.slideIn = false;
+    renderAlerts();
+  }, 600);
+  if (type === "hazard") playCriticalSound();
+}
+
+// Demo: Simulate alerts every few seconds
+const demoAlerts = [
+  ["info", "Path Update", "Robot path recalculated successfully."],
+  ["warning", "Sensor Anomaly", "Temperature sensor reading out of bounds detected."],
+  ["hazard", "Obstacle Detected", "Critical obstacle in robot path! Immediate action required."],
+  ["info", "Maintenance", "Scheduled maintenance due in 15 minutes."],
+  ["warning", "Low Oxygen", "O2 levels are approaching lower limit."],
+  ["hazard", "Environmental Hazard", "Severe dust storm detected near habitat perimeter."],
+];
+
+function simulateAlerts(idx = 0) {
+  addAlert(...demoAlerts[idx % demoAlerts.length]);
+  setTimeout(() => simulateAlerts(idx + 1), 5000);
+}
+simulateAlerts();
+
+// Mark all alerts as resolved
+document.getElementById("resolveAll").onclick = () => {
+  alerts.forEach(alert => {
+    if (!alert.resolved && alert.type !== "safe") resolveAlert(alert.id);
+  });
+  renderAlerts();
+};
+// Dismiss all alerts
+document.getElementById("clearAll").onclick = () => {
+  alerts.forEach(alert => alert.dismissed = true);
+  renderAlerts();
+};
+
+// Animation (Tailwind custom class)
+const style = document.createElement('style');
+style.innerHTML = `
+  .animate-slideIn {
+    animation: slideInRight 0.6s cubic-bezier(0.32,1.56,0.5,1) both;
+  }
+  @keyframes slideInRight {
+    0% {opacity:0; transform:translateX(64px);}
+    100% {opacity:1; transform:translateX(0);}
+  }
+`;
+document.head.appendChild(style);
+</script>
+  </main>
+
+  <script src="/main/script.js"></script>
+</body>
+
+</html>
+<script>
+  const toggleBtn = document.getElementById('toggleSidebar');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    if (sidebar.classList.contains('collapsed')) {
+        mainContent.classList.remove('ml-[240px]');
+        mainContent.classList.add('ml-[72px]');
+    } else {
+        mainContent.classList.remove('ml-[72px]');
+        mainContent.classList.add('ml-[240px]');
+    }
+});
+
+</script>

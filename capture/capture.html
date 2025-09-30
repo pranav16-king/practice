@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,129 +7,196 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/main/style.css">
   <style>
-    /* Animated Background */
+    /* Background animation */
     main {
- 
+      background: radial-gradient(ellipse at top left, #23243b 60%, #181825 100%);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       animation: lunar-pan 40s ease-in-out infinite alternate;
     }
-
     @keyframes lunar-pan {
-      0% {
-        background-size: 100%;
-        background-position: center;
-      }
-
-      50% {
-        background-size: 115%;
-        background-position: top center;
-      }
-
-      100% {
-        background-size: 100%;
-        background-position: center;
-      }
+      0% { background-size: 100%; background-position: center; }
+      50% { background-size: 115%; background-position: top center; }
+      100% { background-size: 100%; background-position: center; }
     }
 
-    /* Card animation */
-    .fade-in-up {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeUp 1s forwards;
-    }
+    /* Glow + hover */
+    .glow { box-shadow: 0 0 12px 0 #38bdf8, 0 0 24px 0 #8b5cf6; }
+    .report-card:hover { transform: translateY(-8px) scale(1.02); transition: all 0.3s ease; }
 
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Counter animation */
-    .counter {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #66fcf1;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-      }
+    .gradient-text {
+      background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #f472b6 100%);
     }
   </style>
 </head>
 
 <body class="flex bg-gray-900 text-gray-100 min-h-screen">
 
-  <!-- Sidebar -->
+  <!-- Sidebar / Navbar -->
   <header id="sidebar" class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-cyan-400 w-60 min-h-screen fixed flex flex-col items-center p-6 shadow-lg transition-all duration-300">
     <button id="toggleSidebar" class="toggle-btn text-4xl mb-6 cursor-pointer">☰</button>
-    <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
-    <div class="flex flex-col space-y-2 w-full px-2">
-      <a href="/admin_home" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+    <h1 class="text-xl font-bold mb-8 text-center">🌙 LunaBot Admin</h1>
+    <nav class="flex flex-col space-y-2 w-full px-2">
+      <a href="/home/main.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🏠</span><span class="label">Home</span>
       </a>
-      <a href="/navigation_status" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/navigation/navigation.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🤖</span><span class="label">Navigation</span>
       </a>
-      <a href="/mapping" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/mapping/maping.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🗺️</span><span class="label">Mapping</span>
       </a>
-      <a href="/maintenance" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/maintainunace/maintainunace.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🔧</span><span class="label">Maintenance</span>
       </a>
-      <a href="/alerts" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/alart/alart.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">⚠️</span><span class="label">Alerts</span>
       </a>
-      <a href="{{ url_for('setting') }}" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/setting/setting.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">⚙️</span><span class="label">Settings</span>
       </a>
-    </div>
+    
+    </nav>
 
     <div class="profile mt-auto w-full flex items-center p-3 rounded-lg bg-gray-800/50 hover:scale-105 transition">
       <img src="/static/images_index/profile_avatar.png" alt="Profile" class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
-      <div class="flex flex-col">
+      <div>
         <span class="text-sm font-semibold">Welcome, {{name}}</span>
-        <a href="/logout">
-          <button class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
-        </a>
+        <a href="/logout"><button class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800">Logout</button></a>
       </div>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main id="mainContent" class="flex-1 ml-60 p-6 min-h-screen">
+  <main id="mainContent" class="flex-1 ml-60 p-6 min-h-screen text-white">
 
- 
+    
+
+    <!-- Report Grid (10 cards) -->
+    <section class="py-10 md:py-16 relative z-10">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+          <!-- Card 1 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-cyan-500 glow report-card">
+            <img src="/static/Image/new (1).jpg" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-cyan-400">Lunar Lander</h3>
+              <p class="text-gray-300 text-sm">Autonomous landers for safe lunar surface missions.</p>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-purple-500 glow report-card">
+            <img src="/static/Image/new (2).jpg" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-purple-400">Orion Capsule</h3>
+              <p class="text-gray-300 text-sm">Human-rated spacecraft for deep-space exploration.</p>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-fuchsia-500 glow report-card">
+            <img src="/static/Image/new (3).jpg" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-fuchsia-400">Space Habitat</h3>
+              <p class="text-gray-300 text-sm">Living modules with oxygen & radiation shielding.</p>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-pink-500 glow report-card">
+            <img src="/static/Image/lunar.avif" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-pink-400">Mars Rover</h3>
+              <p class="text-gray-300 text-sm">AI-powered rover with terrain hazard detection.</p>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-indigo-500 glow report-card">
+            <img src="/static/Image/linar2.avif" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-indigo-400">James Webb Telescope</h3>
+              <p class="text-gray-300 text-sm">Infrared telescope revolutionizing space research.</p>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-teal-500 glow report-card">
+            <img src="/static/Image/lunar2.jpg" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-teal-400">Dragon Capsule</h3>
+              <p class="text-gray-300 text-sm">Commercial spacecraft supporting ISS missions.</p>
+            </div>
+          </div>
+
+          <!-- Card 7 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-yellow-500 glow report-card">
+            <img src="/static/Image/lunar3.webp" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-yellow-400">Saturn V Rocket</h3>
+              <p class="text-gray-300 text-sm">The most powerful rocket ever launched.</p>
+            </div>
+          </div>
+
+          <!-- Card 8 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-red-500 glow report-card">
+            <img src="/static/Image/lunar.avif" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-red-400">Hubble Telescope</h3>
+              <p class="text-gray-300 text-sm">Legendary observatory orbiting Earth since 1990.</p>
+            </div>
+          </div>
+
+          <!-- Card 9 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-green-500 glow report-card">
+            <img src="/static/Image/lunar3.webp" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-green-400">Apollo 11</h3>
+              <p class="text-gray-300 text-sm">Historic mission landing humans on the Moon.</p>
+            </div>
+          </div>
+
+          <!-- Card 10 -->
+          <div class="bg-blue-900/30 rounded-xl overflow-hidden border border-orange-500 glow report-card">
+            <img src="/static/Image/new (4).jpg" class="w-full h-48 object-cover" />
+            <div class="p-6">
+              <h3 class="font-bold text-xl mb-2 text-orange-400">Space Shuttle</h3>
+              <p class="text-gray-300 text-sm">Reusable spacecraft enabling frequent missions.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 text-center text-gray-400 text-sm">
+      Project Report Section © 2025<br>Space Research | Lunar Habitat | Autonomous Robotics
+    </footer>
   </main>
 
-  <script src="/main/script.js"></script>
+  <!-- Sidebar Toggle -->
+  <script>
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        sidebar.style.width = "72px";
+        mainContent.classList.remove("ml-60");
+        mainContent.classList.add("ml-[72px]");
+      } else {
+        sidebar.style.width = "240px";
+        mainContent.classList.remove("ml-[72px]");
+        mainContent.classList.add("ml-60");
+      }
+    });
+  </script>
+
 </body>
-
 </html>
-<script>
-  const toggleBtn = document.getElementById('toggleSidebar');
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.getElementById('mainContent');
-
-toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    if (sidebar.classList.contains('collapsed')) {
-        mainContent.classList.remove('ml-[240px]');
-        mainContent.classList.add('ml-[72px]');
-    } else {
-        mainContent.classList.remove('ml-[72px]');
-        mainContent.classList.add('ml-[240px]');
-    }
-});
-
-</script>

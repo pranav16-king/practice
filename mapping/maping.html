@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaBot Mission Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/main/style.css">
+  <style>
+    /* Animated Background */
+    main {
+ 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: lunar-pan 40s ease-in-out infinite alternate;
+    }
+
+    @keyframes lunar-pan {
+      0% {
+        background-size: 100%;
+        background-position: center;
+      }
+
+      50% {
+        background-size: 115%;
+        background-position: top center;
+      }
+
+      100% {
+        background-size: 100%;
+        background-position: center;
+      }
+    }
+
+    /* Card animation */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Counter animation */
+    .counter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #66fcf1;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex bg-gray-900 text-gray-100 min-h-screen">
+
+  <!-- Sidebar -->
+  <header id="sidebar" class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-cyan-400 w-60 min-h-screen fixed flex flex-col items-center p-6 shadow-lg transition-all duration-300">
+    <button id="toggleSidebar" class="toggle-btn text-4xl mb-6 cursor-pointer">☰</button>
+    <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
+    <div class="flex flex-col space-y-2 w-full px-2">
+      <a href="/home/main.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🏠</span><span class="label">Home</span>
+      </a>
+      <a href="/navigation/navigation.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🤖</span><span class="label">Navigation</span>
+      </a>
+      <a href="/mapping/maping.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🗺️</span><span class="label">Mapping</span>
+      </a>
+      <a href="/maintainunace/maintainunace.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🔧</span><span class="label">Maintenance</span>
+      </a>
+      <a href="/alart/alart.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚠️</span><span class="label">Alerts</span>
+      </a>
+      <a href="/setting/setting.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚙️</span><span class="label">Settings</span>
+      </a>
+    </div>
+
+    <div class="profile mt-auto w-full flex items-center p-3 rounded-lg bg-gray-800/50 hover:scale-105 transition">
+      <img src="/static/images_index/profile_avatar.png" alt="Profile" class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold">Welcome, {{name}}</span>
+        <a href="/logout">
+          <button class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 ml-60 p-6 min-h-screen">
+   
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #0B0C10;
+    }
+    /* Custom scrollbar for map container */
+    .map-scroll::-webkit-scrollbar {
+      width: 8px;
+      background: #1f2329;
+    }
+    .map-scroll::-webkit-scrollbar-thumb {
+      background: #C5C6C7;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-[#0B0C10] font-sans">
+  <div class="w-full max-w-4xl mx-auto p-4">
+    <!-- Card Container -->
+    <div class="bg-[#1f2329] rounded-2xl shadow-2xl flex flex-col md:flex-row transition-all duration-300">
+      <!-- Mapping Area -->
+      <div class="flex-1 p-4 md:p-6 map-scroll overflow-auto">
+        <div class="relative w-full h-[420px] min-h-[320px] bg-[#C5C6C7] rounded-xl shadow-lg border-4 border-[#22262c]">
+          <!-- Map grid (optional visual cue) -->
+          <div class="absolute inset-0 pointer-events-none z-0">
+            <svg width="100%" height="100%">
+              <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <rect x="0" y="0" width="40" height="40" fill="none" stroke="#b0b3b5" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+          </div>
+          <!-- Robot Path Canvas -->
+          <canvas id="pathCanvas" width="600" height="420" class="absolute left-0 top-0 w-full h-full z-10"></canvas>
+          <!-- Markers: Obstacles, Safe Zones -->
+          <div id="mapMarkers" class="absolute left-0 top-0 w-full h-full z-20"></div>
+          <!-- Robot Icon (Animated) -->
+          <div id="robotIcon" class="absolute z-30 transition-all duration-500">
+            <!-- Robot SVG Icon -->
+            <svg width="38" height="38" viewBox="0 0 38 38">
+              <circle cx="19" cy="19" r="15" fill="#00BFFF" stroke="#22262c" stroke-width="2" />
+              <rect x="13" y="8" width="12" height="6" rx="3" fill="#C5C6C7" />
+              <circle cx="19" cy="19" r="5" fill="#FFFFFF" opacity="0.8"/>
+            </svg>
+          </div>
+        </div>
+        <!-- Map Controls -->
+        <div class="flex gap-2 mt-4">
+          <button id="toggleHazard" class="px-3 py-1 rounded-lg bg-[#FF4500] text-white font-semibold shadow hover:bg-[#d13c10] transition">
+            Toggle Hazards
+          </button>
+          <button id="toggleSafe" class="px-3 py-1 rounded-lg bg-[#32CD32] text-white font-semibold shadow hover:bg-[#288e24] transition">
+            Toggle Safe Zones
+          </button>
+        </div>
+      </div>
+      <!-- Info Panel -->
+      <div class="w-full md:w-72 bg-[#22262c] rounded-r-2xl md:rounded-l-none rounded-b-2xl md:rounded-b-none p-5 flex flex-col justify-center items-center shadow-lg border-l-4 border-[#C5C6C7]">
+        <h2 class="text-[#00BFFF] text-xl font-bold mb-2 tracking-wide">Robot Status</h2>
+        <div class="w-full">
+          <div class="flex items-center justify-between py-2">
+            <span class="text-white font-medium">LiDAR:</span>
+            <span id="lidarStatus" class="px-2 py-1 rounded bg-[#32CD32] text-white text-xs">Online</span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-white font-medium">Camera:</span>
+            <span id="cameraStatus" class="px-2 py-1 rounded bg-[#32CD32] text-white text-xs">Active</span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-white font-medium">O₂ Level:</span>
+            <span id="o2Level" class="px-2 py-1 rounded bg-[#32CD32] text-white text-xs">98%</span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-white font-medium">Temperature:</span>
+            <span id="temperature" class="px-2 py-1 rounded bg-[#FFD700] text-[#22262c] text-xs">-14°C</span>
+          </div>
+        </div>
+        <div class="mt-6 w-full">
+          <h3 class="text-[#C5C6C7] text-sm font-bold mb-2">Navigation Info</h3>
+          <div class="text-white text-xs mb-1">Position: <span id="robotPos" class="font-mono">[0,0]</span></div>
+          <div class="text-white text-xs mb-1">Path Length: <span id="pathLen" class="font-mono">0</span> m</div>
+          <div class="text-white text-xs mb-1">Status: <span id="robotStatus" class="font-semibold text-[#00BFFF]">Mapping</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mapping Section JS -->
+  <script>
+    // Map and animation settings
+    const mapWidth = 600, mapHeight = 420;
+    const robotRadius = 19;
+    const pathCanvas = document.getElementById('pathCanvas');
+    const ctx = pathCanvas.getContext('2d');
+    const robotIcon = document.getElementById('robotIcon');
+    const mapMarkers = document.getElementById('mapMarkers');
+    // Sensor info
+    const o2Level = document.getElementById('o2Level');
+    const temperature = document.getElementById('temperature');
+    const robotPosEl = document.getElementById('robotPos');
+    const pathLenEl = document.getElementById('pathLen');
+    const robotStatusEl = document.getElementById('robotStatus');
+
+    // Simulated path and markers
+    const path = [
+      [60, 70], [90, 70], [120, 90], [160, 120], [200, 150], [240, 170],
+      [280, 200], [320, 260], [360, 300], [410, 330], [470, 340], [530, 380]
+    ];
+    let robotIdx = 0;
+    let pathTraced = [];
+    let showHazards = true;
+    let showSafeZones = true;
+
+    // Place obstacles and safe zones
+    const hazards = [
+      { x: 115, y: 88 }, { x: 250, y: 160 }, { x: 370, y: 320 }, { x: 510, y: 390 }
+    ];
+    const safeZones = [
+      { x: 60, y: 75 }, { x: 310, y: 265 }, { x: 470, y: 345 }
+    ];
+
+    function drawPath() {
+      ctx.clearRect(0, 0, mapWidth, mapHeight);
+      ctx.save();
+      ctx.strokeStyle = "#00BFFF";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      for (let i = 0; i < pathTraced.length; i++) {
+        const [x, y] = pathTraced[i];
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawMarkers() {
+      mapMarkers.innerHTML = '';
+      // Hazards (red)
+      if (showHazards) {
+        hazards.forEach(h => {
+          const el = document.createElement('div');
+          el.className = 'absolute w-7 h-7 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110';
+          el.style.left = `${h.x - 14}px`;
+          el.style.top = `${h.y - 14}px`;
+          el.innerHTML = `<span class="w-5 h-5 bg-[#FF4500] border-2 border-[#FFD700] rounded-full flex items-center justify-center">
+            <svg width="16" height="16"><circle cx="8" cy="8" r="6" fill="#FF4500"/><text x="8" y="11" text-anchor="middle" font-size="11" fill="#FFD700" font-weight="bold">!</text></svg>
+          </span>`;
+          el.title = "Hazard: Obstacle";
+          mapMarkers.appendChild(el);
+        });
+      }
+      // Safe zones (green)
+      if (showSafeZones) {
+        safeZones.forEach(z => {
+          const el = document.createElement('div');
+          el.className = 'absolute w-7 h-7 rounded-full flex items-center justify-center shadow-md transition-all duration-200 hover:scale-110';
+          el.style.left = `${z.x - 14}px`;
+          el.style.top = `${z.y - 14}px`;
+          el.innerHTML = `<span class="w-5 h-5 bg-[#32CD32] border-2 border-[#C5C6C7] rounded-full flex items-center justify-center">
+            <svg width="16" height="16"><circle cx="8" cy="8" r="6" fill="#32CD32"/><text x="8" y="11" text-anchor="middle" font-size="11" fill="#FFFFFF" font-weight="bold">✓</text></svg>
+          </span>`;
+          el.title = "Safe Zone";
+          mapMarkers.appendChild(el);
+        });
+      }
+    }
+
+    function moveRobot() {
+      if (robotIdx >= path.length) {
+        robotStatusEl.textContent = "Idle";
+        return;
+      }
+      const [x, y] = path[robotIdx];
+      // Position robot icon
+      robotIcon.style.left = `${x - 19}px`;
+      robotIcon.style.top = `${y - 19}px`;
+      // Animate glow
+      robotIcon.style.boxShadow = "0 0 12px 3px #00BFFF88";
+      // Update info panel
+      robotPosEl.textContent = `[${x},${y}]`;
+      pathLenEl.textContent = (robotIdx * 4).toFixed(1);
+      if (robotIdx > 0) robotStatusEl.textContent = "Navigating";
+      // Simulate sensor data
+      o2Level.textContent = `${98 - robotIdx}%`;
+      temperature.textContent = `${-14 + robotIdx}°C`;
+      // Trace path
+      if (robotIdx === 0) pathTraced = [[x, y]];
+      else pathTraced.push([x, y]);
+      drawPath();
+      // Next movement
+      robotIdx++;
+      setTimeout(moveRobot, 900);
+    }
+
+    drawMarkers();
+    drawPath();
+    moveRobot();
+
+    // Toggle markers
+    document.getElementById('toggleHazard').onclick = () => {
+      showHazards = !showHazards;
+      drawMarkers();
+    };
+    document.getElementById('toggleSafe').onclick = () => {
+      showSafeZones = !showSafeZones;
+      drawMarkers();
+    };
+  </script>
+
+  </main>
+
+  <script src="/main/script.js"></script>
+</body>
+
+</html>
+<script>
+  const toggleBtn = document.getElementById('toggleSidebar');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    if (sidebar.classList.contains('collapsed')) {
+        mainContent.classList.remove('ml-[240px]');
+        mainContent.classList.add('ml-[72px]');
+    } else {
+        mainContent.classList.remove('ml-[72px]');
+        mainContent.classList.add('ml-[240px]');
+    }
+});
+
+</script>

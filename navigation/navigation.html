@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaBot Mission Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/main/style.css">
+  <style>
+    /* Animated Background */
+    main {
+ 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: lunar-pan 40s ease-in-out infinite alternate;
+    }
+
+    @keyframes lunar-pan {
+      0% {
+        background-size: 100%;
+        background-position: center;
+      }
+
+      50% {
+        background-size: 115%;
+        background-position: top center;
+      }
+
+      100% {
+        background-size: 100%;
+        background-position: center;
+      }
+    }
+
+    /* Card animation */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Counter animation */
+    .counter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #66fcf1;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex bg-gray-900 text-gray-100 min-h-screen">
+
+  <!-- Sidebar -->
+  <header id="sidebar" class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-cyan-400 w-60 min-h-screen fixed flex flex-col items-center p-6 shadow-lg transition-all duration-300">
+    <button id="toggleSidebar" class="toggle-btn text-4xl mb-6 cursor-pointer">☰</button>
+    <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
+    <div class="flex flex-col space-y-2 w-full px-2">
+      <a href="/home/main.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🏠</span><span class="label">Home</span>
+      </a>
+      <a href="/navigation/navigation.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🤖</span><span class="label">Navigation</span>
+      </a>
+      <a href="/mapping/maping.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🗺️</span><span class="label">Mapping</span>
+      </a>
+      <a href="/maintainunace/maintainunace.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🔧</span><span class="label">Maintenance</span>
+      </a>
+      <a href="/alart/alart.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚠️</span><span class="label">Alerts</span>
+      </a>
+      <a href="/setting/setting.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚙️</span><span class="label">Settings</span>
+      </a>
+    </div>
+
+    <div class="profile mt-auto w-full flex items-center p-3 rounded-lg bg-gray-800/50 hover:scale-105 transition">
+      <img src="/static/images_index/profile_avatar.png" alt="Profile" class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold">Welcome, {{name}}</span>
+        <a href="/logout">
+          <button class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 ml-60 p-6 min-h-screen">
+    <!-- LunaBot Navigation Section -->
+
+<div class="min-h-screen bg-[#0B0C10] flex items-center justify-center py-8 px-2">
+  <div class="w-full max-w-3xl bg-[#C5C6C7] rounded-2xl shadow-2xl p-8 flex flex-col">
+    <h2 class="text-3xl font-bold text-white mb-6 tracking-wide text-center">LunaBot Navigation</h2>
+    <!-- Controls -->
+    <div class="flex justify-center space-x-4 mb-4">
+      <button id="startBtn" class="px-4 py-2 rounded-lg font-bold bg-[#00BFFF] text-white hover:bg-[#32CD32] transition shadow">
+        Start Navigation
+      </button>
+      <button id="stopBtn" class="px-4 py-2 rounded-lg font-bold bg-[#FFD700] text-[#0B0C10] hover:bg-[#FF4500] hover:text-white transition shadow">
+        Stop
+      </button>
+      <button id="resetBtn" class="px-4 py-2 rounded-lg font-bold bg-[#C5C6C7] text-[#0B0C10] hover:bg-[#00BFFF] hover:text-white transition shadow">
+        Reset Path
+      </button>
+    </div>
+    <!-- Map Panel -->
+    <div class="relative bg-[#C5C6C7] rounded-xl shadow-lg mx-auto w-full max-w-2xl h-[420px] flex items-center justify-center overflow-hidden">
+      <!-- SVG Map Area -->
+      <svg id="navMap" class="w-full h-full" viewBox="0 0 600 400">
+        <!-- Grid -->
+        <g>
+          <rect x="0" y="0" width="600" height="400" fill="#C5C6C7"/>
+          <g>
+            <!-- 10x grid lines -->
+            <g>
+              <line x1="0" y1="40" x2="600" y2="40" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="80" x2="600" y2="80" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="120" x2="600" y2="120" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="160" x2="600" y2="160" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="200" x2="600" y2="200" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="240" x2="600" y2="240" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="280" x2="600" y2="280" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="320" x2="600" y2="320" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="0" y1="360" x2="600" y2="360" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="60" y1="0" x2="60" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="120" y1="0" x2="120" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="180" y1="0" x2="180" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="240" y1="0" x2="240" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="300" y1="0" x2="300" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="360" y1="0" x2="360" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="420" y1="0" x2="420" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="480" y1="0" x2="480" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+              <line x1="540" y1="0" x2="540" y2="400" stroke="#B0B0B0" stroke-width="1"/>
+            </g>
+          </g>
+        </g>
+        <!-- Safe Zones -->
+        <g id="safeZones">
+          <rect x="50" y="50" width="60" height="60" fill="#32CD32" fill-opacity="0.2" stroke="#32CD32" stroke-width="2"/>
+          <rect x="490" y="320" width="50" height="50" fill="#32CD32" fill-opacity="0.2" stroke="#32CD32" stroke-width="2"/>
+        </g>
+        <!-- Obstacles -->
+        <g id="obstacles">
+          <circle class="obstacle" cx="210" cy="100" r="22" fill="#FFD700" stroke="#FFD700" stroke-width="2"/>
+          <rect class="obstacle" x="360" y="180" width="40" height="40" fill="#FF4500" stroke="#FF4500" stroke-width="2"/>
+        </g>
+        <!-- Hazards -->
+        <g id="hazards">
+          <polygon class="hazard" points="520,150 560,150 540,190" fill="#FF4500" stroke="#FF4500" stroke-width="2"/>
+        </g>
+        <!-- Path Lines -->
+        <g id="navPath"></g>
+        <!-- Traversed Path -->
+        <g id="traversedPath"></g>
+        <!-- Robot Icon -->
+        <g id="robotIcon"></g>
+      </svg>
+      <!-- Tooltip -->
+      <div id="navTooltip" class="absolute hidden px-3 py-2 rounded bg-[#0B0C10] text-white text-xs font-mono shadow-lg pointer-events-none z-20"></div>
+    </div>
+    <!-- Current Location Display -->
+    <div class="mt-6 mx-auto flex justify-center items-center gap-4">
+      <span class="text-white font-semibold">Current Coordinates:</span>
+      <span id="currCoords" class="text-[#00BFFF] font-mono text-lg">[60, 60]</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Config ---
+const pathPoints = [
+  [60, 60], [120, 80], [180, 120], [240, 180], [300, 250], [360, 320], [420, 360], [490, 350]
+];
+const traversed = [];
+let robotIdx = 0;
+let moving = false;
+let moveInterval = null;
+
+// --- Elements ---
+const svg = document.getElementById('navMap');
+const navPath = document.getElementById('navPath');
+const traversedPath = document.getElementById('traversedPath');
+const robotIcon = document.getElementById('robotIcon');
+const currCoords = document.getElementById('currCoords');
+const tooltip = document.getElementById('navTooltip');
+
+// --- Draw Path ---
+function drawPath() {
+  // Planned Path: Tech Blue
+  let d = "";
+  for (let i = 0; i < pathPoints.length; ++i)
+    d += (i === 0 ? "M" : "L") + pathPoints[i][0] + "," + pathPoints[i][1] + " ";
+  navPath.innerHTML = `<path d="${d}" stroke="#00BFFF" stroke-width="4" fill="none" stroke-dasharray="10 6"/>`;
+}
+drawPath();
+
+// --- Draw Traversed Path ---
+function drawTraversed() {
+  if (traversed.length < 2) {
+    traversedPath.innerHTML = '';
+    return;
+  }
+  let d = "";
+  for (let i = 0; i < traversed.length; ++i)
+    d += (i === 0 ? "M" : "L") + traversed[i][0] + "," + traversed[i][1] + " ";
+  traversedPath.innerHTML = `<path d="${d}" stroke="#00BFFF" stroke-width="6" fill="none" />`;
+}
+
+// --- Draw Robot Icon ---
+function drawRobot() {
+  const [x, y] = pathPoints[robotIdx];
+  currCoords.textContent = `[${x}, ${y}]`;
+  robotIcon.innerHTML = `
+    <g>
+      <circle cx="${x}" cy="${y}" r="16" fill="#00BFFF" stroke="#FFFFFF" stroke-width="3" filter="url(#glow)" />
+      <rect x="${x-8}" y="${y-16}" width="16" height="8" rx="2" fill="#C5C6C7" />
+      <text x="${x}" y="${y+5}" text-anchor="middle" fill="#FFFFFF" font-size="16" font-family="Arial" font-weight="bold">🤖</text>
+    </g>
+  `;
+}
+drawRobot();
+
+// --- Animate Movement ---
+function moveRobot() {
+  if (!moving || robotIdx >= pathPoints.length - 1) return;
+  robotIdx++;
+  traversed.push(pathPoints[robotIdx]);
+  drawTraversed();
+  drawRobot();
+  // Highlight hazard if near
+  if (robotIdx === 3) {
+    showTooltip(pathPoints[robotIdx][0], pathPoints[robotIdx][1], "Hazard Detected! Dust storm", "#FF4500");
+    setTimeout(hideTooltip, 1500);
+  }
+  // Highlight obstacle if near
+  if (robotIdx === 2) {
+    showTooltip(pathPoints[robotIdx][0], pathPoints[robotIdx][1], "Obstacle: Rock detected", "#FFD700");
+    setTimeout(hideTooltip, 1500);
+  }
+  if (robotIdx === pathPoints.length - 1) {
+    showTooltip(pathPoints[robotIdx][0], pathPoints[robotIdx][1], "Reached Safe Zone!", "#32CD32");
+    setTimeout(hideTooltip, 1500);
+    stopNavigation();
+  }
+}
+
+// --- Controls ---
+function startNavigation() {
+  if (moving || robotIdx >= pathPoints.length - 1) return;
+  moving = true;
+  moveInterval = setInterval(moveRobot, 1000);
+}
+function stopNavigation() {
+  moving = false;
+  if (moveInterval) clearInterval(moveInterval);
+}
+function resetNavigation() {
+  stopNavigation();
+  robotIdx = 0;
+  traversed.length = 0;
+  drawTraversed();
+  drawRobot();
+  hideTooltip();
+}
+
+// --- Button Events ---
+document.getElementById('startBtn').onclick = startNavigation;
+document.getElementById('stopBtn').onclick = stopNavigation;
+document.getElementById('resetBtn').onclick = resetNavigation;
+
+// --- Hover Tooltips (obstacles, hazards, safe zones) ---
+svg.addEventListener('mousemove', function(e) {
+  const pt = svg.createSVGPoint();
+  pt.x = e.offsetX; pt.y = e.offsetY;
+  const gridX = Math.round(pt.x / 10) * 10;
+  const gridY = Math.round(pt.y / 10) * 10;
+  let label = `Coords: [${gridX}, ${gridY}]`;
+  let color = "#FFFFFF";
+  // Check if inside safe zone
+  if ((gridX >= 50 && gridX <= 110 && gridY >= 50 && gridY <= 110) ||
+      (gridX >= 490 && gridX <= 540 && gridY >= 320 && gridY <= 370)) {
+    label += " (Safe Zone)";
+    color = "#32CD32";
+  }
+  // Check obstacles
+  if (Math.hypot(gridX-210, gridY-100) < 22) {
+    label += " (Obstacle: Rock)";
+    color = "#FFD700";
+  }
+  if (gridX >= 360 && gridX <= 400 && gridY >= 180 && gridY <= 220) {
+    label += " (Blocked)";
+    color = "#FF4500";
+  }
+  // Hazards
+  if (gridX >= 520 && gridX <= 560 && gridY >= 150 && gridY <= 190) {
+    label += " (Hazard: Dust Storm)";
+    color = "#FF4500";
+  }
+  showTooltip(pt.x, pt.y, label, color);
+});
+svg.addEventListener('mouseleave', hideTooltip);
+
+function showTooltip(x, y, label, color) {
+  tooltip.textContent = label;
+  tooltip.style.left = `${x + 24}px`;
+  tooltip.style.top = `${y + 24}px`;
+  tooltip.style.backgroundColor = color || "#0B0C10";
+  tooltip.classList.remove("hidden");
+}
+function hideTooltip() {
+  tooltip.classList.add("hidden");
+}
+
+// --- Responsive resize for tooltip positioning ---
+window.addEventListener('resize', () => {
+  hideTooltip();
+});
+</script>
+  </main>
+
+  <script src="/main/script.js"></script>
+</body>
+
+</html>
+<script>
+  const toggleBtn = document.getElementById('toggleSidebar');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    if (sidebar.classList.contains('collapsed')) {
+        mainContent.classList.remove('ml-[240px]');
+        mainContent.classList.add('ml-[72px]');
+    } else {
+        mainContent.classList.remove('ml-[72px]');
+        mainContent.classList.add('ml-[240px]');
+    }
+});
+
+</script>

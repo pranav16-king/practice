@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaBot Mission Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/main/style.css">
+  <style>
+    /* Animated Background */
+    main {
+ 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: lunar-pan 40s ease-in-out infinite alternate;
+    }
+
+    @keyframes lunar-pan {
+      0% {
+        background-size: 100%;
+        background-position: center;
+      }
+
+      50% {
+        background-size: 115%;
+        background-position: top center;
+      }
+
+      100% {
+        background-size: 100%;
+        background-position: center;
+      }
+    }
+
+    /* Card animation */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Counter animation */
+    .counter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #66fcf1;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex bg-gray-900 text-gray-100 min-h-screen">
+
+  <!-- Sidebar -->
+  <header id="sidebar" class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-cyan-400 w-60 min-h-screen fixed flex flex-col items-center p-6 shadow-lg transition-all duration-300">
+    <button id="toggleSidebar" class="toggle-btn text-4xl mb-6 cursor-pointer">☰</button>
+    <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
+    <div class="flex flex-col space-y-2 w-full px-2">
+      <a href="/home/main.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🏠</span><span class="label">Home</span>
+      </a>
+      <a href="/navigation/navigation.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🤖</span><span class="label">Navigation</span>
+      </a>
+      <a href="/mapping/maping.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🗺️</span><span class="label">Mapping</span>
+      </a>
+      <a href="/maintainunace/maintainunace.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🔧</span><span class="label">Maintenance</span>
+      </a>
+      <a href="/alart/alart.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚠️</span><span class="label">Alerts</span>
+      </a>
+      <a href="/setting/setting.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚙️</span><span class="label">Settings</span>
+      </a>
+    </div>
+
+    <div class="profile mt-auto w-full flex items-center p-3 rounded-lg bg-gray-800/50 hover:scale-105 transition">
+      <img src="/static/images_index/profile_avatar.png" alt="Profile" class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold">Welcome, {{name}}</span>
+        <a href="/logout">
+          <button class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 ml-60 p-6 min-h-screen">
+   <!-- LunaBot Settings Section -->
+
+<div class="min-h-screen bg-[#0B0C10] flex items-center justify-center py-8 px-2">
+  <div class="w-full max-w-3xl bg-[#C5C6C7] rounded-2xl shadow-2xl p-8">
+    <h2 class="text-3xl font-bold text-white mb-6 tracking-wide text-center">LunaBot Settings</h2>
+    
+    <!-- Sensors Group -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-[#00BFFF] mb-2">Sensors</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Temperature Threshold -->
+        <div class="bg-[#0B0C10] rounded-xl p-4 shadow flex flex-col items-center">
+          <label for="tempThreshold" class="text-white mb-3">Temperature Threshold (<span id="tempValue" class="text-[#00BFFF] font-mono">25</span>°C)</label>
+          <input type="range" min="0" max="100" value="25" id="tempThreshold" class="w-full accent-[#00BFFF] transition-all duration-150" />
+        </div>
+        <!-- O2 Threshold -->
+        <div class="bg-[#0B0C10] rounded-xl p-4 shadow flex flex-col items-center">
+          <label for="o2Threshold" class="text-white mb-3">O<sub>2</sub> Threshold (<span id="o2Value" class="text-[#00BFFF] font-mono">50</span>%)</label>
+          <input type="range" min="0" max="100" value="50" id="o2Threshold" class="w-full accent-[#00BFFF] transition-all duration-150" />
+        </div>
+        <!-- LiDAR Range -->
+        <div class="bg-[#0B0C10] rounded-xl p-4 shadow flex flex-col items-center">
+          <label for="lidarRange" class="text-white mb-3">LiDAR Range (<span id="lidarValue" class="text-[#00BFFF] font-mono">10</span> m)</label>
+          <input type="range" min="1" max="50" value="10" id="lidarRange" class="w-full accent-[#00BFFF] transition-all duration-150" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts Group -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-[#FFD700] mb-2">Environmental Alerts</h3>
+      <div class="flex flex-wrap gap-6">
+        <!-- Enable Alerts Toggle -->
+        <div class="flex items-center space-x-3 bg-[#0B0C10] rounded-xl p-4 shadow">
+          <span class="text-white">Enable Alerts</span>
+          <button id="alertsToggle" class="relative w-12 h-6 rounded-full transition-colors duration-200"
+              aria-pressed="true">
+            <span class="absolute left-0 top-0 w-full h-full transition-colors duration-200 bg-[#32CD32]" id="alertTrack"></span>
+            <span class="absolute top-0 left-0 w-6 h-6 bg-white rounded-full shadow transition-all duration-200 transform translate-x-6" id="alertThumb"></span>
+          </button>
+        </div>
+        <!-- Hazard Alert (disabled toggle) -->
+        <div class="flex items-center space-x-3 bg-[#0B0C10] rounded-xl p-4 shadow">
+          <span class="text-white">Hazard Alerts</span>
+          <button disabled class="relative w-12 h-6 rounded-full cursor-not-allowed">
+            <span class="absolute left-0 top-0 w-full h-full bg-[#FF4500]"></span>
+            <span class="absolute top-0 left-0 w-6 h-6 bg-gray-400 rounded-full shadow"></span>
+          </button>
+          <span class="ml-2 text-[#FF4500] font-semibold text-sm">Disabled</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Group -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-[#00BFFF] mb-2">Navigation</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Path Planning Option -->
+        <div class="bg-[#0B0C10] rounded-xl p-4 shadow flex flex-col">
+          <label for="pathPlanning" class="text-white mb-2">Path Planning Algorithm</label>
+          <select id="pathPlanning" class="bg-[#C5C6C7] text-[#0B0C10] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition">
+            <option>A*</option>
+            <option>Dijkstra</option>
+            <option>RRT</option>
+          </select>
+        </div>
+        <!-- Path Visualization Toggle -->
+        <div class="bg-[#0B0C10] rounded-xl p-4 shadow flex items-center justify-between">
+          <span class="text-white">Show Path Visualization</span>
+          <button id="pathVisToggle" class="relative w-12 h-6 rounded-full transition-colors duration-200"
+              aria-pressed="false">
+            <span class="absolute left-0 top-0 w-full h-full transition-colors duration-200 bg-gray-500" id="pathVisTrack"></span>
+            <span class="absolute top-0 left-0 w-6 h-6 bg-white rounded-full shadow transition-all duration-200" id="pathVisThumb"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Parameters Group -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-[#00BFFF] mb-2">Custom Parameters</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Robot Speed -->
+        <div class="bg-[#0B0C10] rounded-xl p-4 shadow flex flex-col">
+          <label for="robotSpeed" class="text-white mb-2">Robot Speed (m/s)</label>
+          <input type="number" id="robotSpeed" min="0.1" max="5" step="0.1"
+            value="1.0"
+            class="bg-[#C5C6C7] text-[#0B0C10] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition" />
+        </div>
+        <!-- Patrol Interval -->
+        <div class="bg-[#0B0C10] rounded-xl p-4 shadow flex flex-col">
+          <label for="patrolInterval" class="text-white mb-2">Patrol Interval (min)</label>
+          <input type="number" id="patrolInterval" min="1" max="120" step="1"
+            value="30"
+            class="bg-[#C5C6C7] text-[#0B0C10] rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Display Settings Group -->
+    <div class="mb-8">
+      <h3 class="text-xl font-semibold text-[#00BFFF] mb-2">Display Preferences</h3>
+      <div class="flex items-center space-x-6">
+        <label class="flex items-center space-x-2">
+          <input type="checkbox" id="darkMode" checked class="accent-[#00BFFF] w-5 h-5 transition" />
+          <span class="text-white">Dark Mode</span>
+        </label>
+        <label class="flex items-center space-x-2">
+          <input type="checkbox" id="showDashboard" class="accent-[#00BFFF] w-5 h-5 transition" />
+          <span class="text-white">Show Status Dashboard</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4">
+      <button id="resetBtn" class="px-5 py-2 rounded-lg font-bold bg-[#FF4500] text-white hover:bg-[#FFD700] transition-colors duration-200 shadow">
+        Reset
+      </button>
+      <button id="saveBtn" class="px-5 py-2 rounded-lg font-bold bg-[#00BFFF] text-white hover:bg-[#32CD32] transition-colors duration-200 shadow">
+        Save
+      </button>
+      <button id="applyBtn" class="px-5 py-2 rounded-lg font-bold bg-[#32CD32] text-white hover:bg-[#00BFFF] transition-colors duration-200 shadow">
+        Apply
+      </button>
+    </div>
+    <!-- Notification -->
+    <div id="notif" class="mt-6 hidden px-4 py-2 rounded text-white font-semibold text-center"></div>
+  </div>
+</div>
+
+<!-- Minimal JS for interactive settings and feedback -->
+<script>
+  // Sliders
+  const tempSlider = document.getElementById('tempThreshold');
+  const o2Slider = document.getElementById('o2Threshold');
+  const lidarSlider = document.getElementById('lidarRange');
+  document.getElementById('tempValue').textContent = tempSlider.value;
+  document.getElementById('o2Value').textContent = o2Slider.value;
+  document.getElementById('lidarValue').textContent = lidarSlider.value;
+
+  tempSlider.addEventListener('input', e => {
+    document.getElementById('tempValue').textContent = e.target.value;
+  });
+  o2Slider.addEventListener('input', e => {
+    document.getElementById('o2Value').textContent = e.target.value;
+  });
+  lidarSlider.addEventListener('input', e => {
+    document.getElementById('lidarValue').textContent = e.target.value;
+  });
+
+  // Toggle switches (Alerts)
+  const alertsToggle = document.getElementById('alertsToggle');
+  let alertsEnabled = true;
+  alertsToggle.addEventListener('click', () => {
+    alertsEnabled = !alertsEnabled;
+    if (alertsEnabled) {
+      document.getElementById('alertTrack').classList.add('bg-[#32CD32]');
+      document.getElementById('alertTrack').classList.remove('bg-gray-500');
+      document.getElementById('alertThumb').style.transform = "translateX(24px)";
+    } else {
+      document.getElementById('alertTrack').classList.remove('bg-[#32CD32]');
+      document.getElementById('alertTrack').classList.add('bg-gray-500');
+      document.getElementById('alertThumb').style.transform = "translateX(0px)";
+    }
+  });
+
+  // Toggle switches (Path Visualization)
+  const pathVisToggle = document.getElementById('pathVisToggle');
+  let pathVisEnabled = false;
+  pathVisToggle.addEventListener('click', () => {
+    pathVisEnabled = !pathVisEnabled;
+    if (pathVisEnabled) {
+      document.getElementById('pathVisTrack').classList.remove('bg-gray-500');
+      document.getElementById('pathVisTrack').classList.add('bg-[#00BFFF]');
+      document.getElementById('pathVisThumb').style.transform = "translateX(24px)";
+    } else {
+      document.getElementById('pathVisTrack').classList.remove('bg-[#00BFFF]');
+      document.getElementById('pathVisTrack').classList.add('bg-gray-500');
+      document.getElementById('pathVisThumb').style.transform = "translateX(0px)";
+    }
+  });
+
+  // Action Buttons and Notification
+  function showNotif(msg, color) {
+    const notif = document.getElementById('notif');
+    notif.textContent = msg;
+    notif.className = `mt-6 px-4 py-2 rounded text-white font-semibold text-center bg-[${color}]`;
+    notif.style.display = 'block';
+    setTimeout(() => notif.style.display = 'none', 2000);
+  }
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    tempSlider.value = 25; document.getElementById('tempValue').textContent = 25;
+    o2Slider.value = 50; document.getElementById('o2Value').textContent = 50;
+    lidarSlider.value = 10; document.getElementById('lidarValue').textContent = 10;
+    document.getElementById('robotSpeed').value = 1.0;
+    document.getElementById('patrolInterval').value = 30;
+    alertsEnabled = true;
+    document.getElementById('alertTrack').classList.add('bg-[#32CD32]');
+    document.getElementById('alertTrack').classList.remove('bg-gray-500');
+    document.getElementById('alertThumb').style.transform = "translateX(24px)";
+    pathVisEnabled = false;
+    document.getElementById('pathVisTrack').classList.remove('bg-[#00BFFF]');
+    document.getElementById('pathVisTrack').classList.add('bg-gray-500');
+    document.getElementById('pathVisThumb').style.transform = "translateX(0px)";
+    document.getElementById('pathPlanning').selectedIndex = 0;
+    document.getElementById('darkMode').checked = true;
+    document.getElementById('showDashboard').checked = false;
+    showNotif('Settings reset to default.', '#FFD700');
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    showNotif('Settings saved!', '#32CD32');
+  });
+
+  document.getElementById('applyBtn').addEventListener('click', () => {
+    showNotif('Settings applied!', '#00BFFF');
+  });
+
+  // Input Focus/Blur for smooth transitions
+  document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('focus', e => {
+      e.target.classList.add('ring-2', 'ring-[#00BFFF]', 'transition');
+    });
+    el.addEventListener('blur', e => {
+      e.target.classList.remove('ring-2', 'ring-[#00BFFF]');
+    });
+  });
+</script>
+  </main>
+
+  <script src="/main/script.js"></script>
+</body>
+
+</html>
+<script>
+  const toggleBtn = document.getElementById('toggleSidebar');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    if (sidebar.classList.contains('collapsed')) {
+        mainContent.classList.remove('ml-[240px]');
+        mainContent.classList.add('ml-[72px]');
+    } else {
+        mainContent.classList.remove('ml-[72px]');
+        mainContent.classList.add('ml-[240px]');
+    }
+});
+
+</script>

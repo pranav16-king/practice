@@ -191,24 +191,22 @@
       aria-label="Close Sidebar">×</button>
     <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
     <nav class="flex flex-col space-y-2 w-full px-2">
-      <a href="/admin_home" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/home/main.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🏠</span><span class="label">Home</span>
       </a>
-      <a href="/navigation_status"
-        class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/navigation/navigation.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🤖</span><span class="label">Navigation</span>
       </a>
-      <a href="/mapping" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/mapping/maping.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🗺️</span><span class="label">Mapping</span>
       </a>
-      <a href="/maintenance" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/maintainunace/maintainunace.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">🔧</span><span class="label">Maintenance</span>
       </a>
-      <a href="/alerts" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/alart/alart.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">⚠️</span><span class="label">Alerts</span>
       </a>
-      <a href="{{ url_for('setting') }}"
-        class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+      <a href="/setting/setting.html" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
         <span class="emoji">⚙️</span><span class="label">Settings</span>
       </a>
     </nav>
@@ -217,7 +215,7 @@
         class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
       <div class="flex flex-col">
         <span class="text-sm font-semibold">Welcome, {{name}}</span>
-        <a href="/logout">
+        <a href="/index.html">
           <button
             class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
         </a>
