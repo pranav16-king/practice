@@ -1,0 +1,112 @@
+/* Sidebar Styling - LunaBot Theme */
+header {
+    background: linear-gradient(to bottom, #0b0c10, #1f2833, #0d1b2a); /* Space-dark gradient */
+    color: #cfd8dc; /* Moonlight silver */
+    width: 240px;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.6);
+    transition: width 0.3s ease;
+    z-index: 50;
+}
+
+header.collapsed {
+    width: 72px;
+}
+
+/* Navigation Links */
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    font-weight: 500;
+    color: #66fcf1; /* Futuristic cyan */
+    border-radius: 8px;
+    transition: background 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    background: rgba(102, 252, 241, 0.15); /* Cyan glow on hover */
+    color: #ffffff;
+}
+
+header.collapsed .nav-link span.label {
+    display: none;
+}
+
+/* Profile Section */
+.profile {
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(102, 252, 241, 0.1); /* Subtle lunar glow */
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.profile:hover {
+    transform: scale(1.05);
+    background: rgba(102, 252, 241, 0.2);
+}
+
+.profile img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin-right: 12px;
+    border: 2px solid #66fcf1; /* Cyan outline */
+}
+
+header.collapsed .profile span {
+    display: none;
+}
+
+/* Toggle Button */
+.toggle-btn {
+    cursor: pointer;
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+    color: #66fcf1;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.toggle-btn:hover {
+    transform: rotate(90deg);
+    color: #ffffff;
+}
+main {
+  width: 100vw;                  /* Full width */
+  height: 100vh;                 /* Full height */
+  background-size: cover;        /* Fill screen while keeping aspect ratio */
+  background-position: center;   /* Center the image */
+  background-repeat: no-repeat;  /* Don’t repeat */
+  background-attachment: fixed;  /* Stay fixed when scrolling (optional) */
+  animation: lunar-pan 40s ease-in-out infinite alternate;
+}
+
+/* Animation keyframes */
+@keyframes lunar-pan {
+  0% {
+    background-size: 100%;
+    background-position: center;
+  }
+  50% {
+    background-size: 115%;          /* Zoom in slowly */
+    background-position: top center; /* Slight upward pan */
+  }
+  100% {
+    background-size: 100%;
+    background-position: center;
+  }
+}

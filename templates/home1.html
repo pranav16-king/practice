@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaBot – Autonomous Navigation of Robot for Lunar Habitats</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen flex flex-col text-white font-[Montserrat]" 
+      style="background-image: url('/static/Image/moon_surface.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+  
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full flex justify-between items-center h-20 px-10 bg-white/5 backdrop-blur-lg border-b border-white/10 z-50">
+    <div class="logo flex items-center gap-2 text-2xl font-bold">
+      <i class="fas fa-robot blue"></i> LunaBot
+    </div>
+    <ul class="flex gap-6">
+      <li><a href="#home" class="px-4 py-2 rounded-full hover:bg-sky-400 hover:text-black transition">Home</a></li>
+      <li><a href="#background" class="px-4 py-2 rounded-full hover:bg-sky-400 hover:text-black transition">Background</a></li>
+      <li><a href="#details" class="px-4 py-2 rounded-full hover:bg-sky-400 hover:text-black transition">Details</a></li>
+      <li><a href="#solution" class="px-4 py-2 rounded-full hover:bg-sky-400 hover:text-black transition">Solution</a></li>
+      <li><a href="#contact" class="px-4 py-2 border border-white/30 rounded-full font-semibold hover:bg-white/20 transition">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <header id="home" class="text-center mt-40 px-6">
+    <h1 class="text-5xl font-bold text-sky-100">🤖 LunaBot: Autonomous Navigation of Robot for Lunar Habitats</h1>
+    <p class="mt-6 text-lg max-w-3xl mx-auto text-sky-200/90">
+      A ROS-based robotic prototype to autonomously navigate, map, and monitor future lunar habitats ensuring astronaut safety and operational reliability.
+    </p>
+  </header>
+
+  <!-- Background Section -->
+  <section id="background" class="mt-24 px-8">
+    <h2 class="text-3xl font-bold text-center text-sky-100 mb-8">Background</h2>
+    <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl p-8 rounded-xl shadow-lg">
+      <p class="text-sky-100/80">
+        With upcoming lunar missions aiming for sustained human presence, autonomous robotic systems are vital for habitat safety and operational reliability. 
+        The Moon’s absence of GPS, constrained spaces, and extreme conditions demand robots capable of independent navigation, mapping, and maintenance tasks 
+        to reduce astronaut workload. ROS (Robot Operating System) offers a modular framework ideal for such applications.
+      </p>
+    </div>
+  </section>
+
+  <!-- Detailed Description -->
+  <section id="details" class="mt-24 px-8">
+    <h2 class="text-3xl font-bold text-center text-sky-100 mb-8">Detailed Description</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-xl shadow-lg">
+        <h3 class="text-xl font-semibold mb-4">Core Capabilities</h3>
+        <ul class="list-disc pl-6 text-sky-100/80 space-y-2">
+          <li>Navigate indoor and outdoor lunar habitat environments.</li>
+          <li>Map and localize using LiDAR, cameras, and IMU sensor fusion.</li>
+          <li>Detect obstacles and hazards for safe path planning.</li>
+          <li>Monitor habitat parameters such as temperature and O₂ levels.</li>
+          <li>Perform routine patrols and alert signaling for maintenance.</li>
+        </ul>
+      </div>
+      <div class="bg-white/10 backdrop-blur-xl p-6 rounded-xl shadow-lg">
+        <h3 class="text-xl font-semibold mb-4">Development Requirements</h3>
+        <p class="text-sky-100/80">
+          Participants will create robust ROS packages for navigation, mapping, and maintenance monitoring. 
+          All functionalities will be validated in a simulated lunar habitat environment.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Expected Solution -->
+  <section id="solution" class="mt-24 px-8 mb-20">
+    <h2 class="text-3xl font-bold text-center text-sky-100 mb-8">Expected Solution</h2>
+    <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl p-8 rounded-xl shadow-lg">
+      <ul class="list-disc pl-6 text-sky-100/80 space-y-2">
+        <li>ROS package(s) implementing autonomous navigation, mapping, and maintenance monitoring.</li>
+        <li>Simulation demonstrating navigation and anomaly detection in a modeled lunar habitat.</li>
+        <li>A demo video showcasing the robot performing these tasks in the simulated environment.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <footer id="contact" class="bg-white/10 backdrop-blur-lg border-t border-white/20 mt-10">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-6 py-10">
+      <div>
+        <h4 class="text-lg font-semibold mb-3">LunaBot Project</h4>
+        <p class="text-sm text-sky-100/80">Autonomous Navigation & Maintenance Robot for Lunar Habitats</p>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold mb-3">Contact</h4>
+        <p class="text-sm">Email: info@lunabot-mission.org</p>
+        <p class="text-sm">Phone: +1 (000) 555-LUNA</p>
+      </div>
+    </div>
+    <div class="text-center text-xs py-4 bg-white/5 border-t border-white/10">
+      © 2025 LunaBot Mission Initiative.
+    </div>
+  </footer>
+
+</body>
+</html>
+<style>
+  .blue{
+    color: rgb(0 152 253);
+  }
+</style>

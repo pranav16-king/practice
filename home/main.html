@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHAKOR Mission Control</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/main/style.css">
+  <link rel="stylesheet" href="/static/ai_icon.css">
+  <style>
+    main {
+      background-image: url('/static/Image/first.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: lunar-pan 40s ease-in-out infinite alternate;
+    }
+
+    @keyframes lunar-pan {
+      0% {
+        background-size: 100%;
+        background-position: center;
+      }
+
+      50% {
+        background-size: 115%;
+        background-position: top center;
+      }
+
+      100% {
+        background-size: 100%;
+        background-position: center;
+      }
+    }
+
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .counter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #66fcf1;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+
+    .chart {
+      width: 100%;
+      height: 150px;
+      background: rgba(102, 252, 241, 0.05);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #66fcf1;
+      font-weight: bold;
+      font-size: 1rem;
+      animation: fadeUp 1.5s forwards;
+    }
+
+    .glass {
+      background: rgba(30, 41, 59, 0.85);
+      border: 2px solid #1e293b;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px #0f172a66;
+    }
+
+    .badge {
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      padding: 0.15rem 0.75rem;
+      margin-left: 0.5rem;
+      display: inline-block;
+    }
+
+    .badge-normal {
+      background: #164e63;
+      color: #22d3ee;
+    }
+
+    .badge-warning {
+      background: #78350f;
+      color: #fbbf24;
+    }
+
+    .badge-info {
+      background: #1e293b;
+      color: #3b82f6;
+    }
+
+    .badge-operational {
+      background: #052e16;
+      color: #4ade80;
+    }
+
+    .badge-active {
+      background: #052e16;
+      color: #4ade80;
+    }
+
+    .badge-autopatrol {
+      background: #1e293b;
+      color: #22d3ee;
+    }
+
+    .badge-ack {
+      background: #1e293b;
+      color: #22d3ee;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    @media (max-width: 1023px) {
+      #sidebar {
+        position: fixed !important;
+        z-index: 50 !important;
+        left: -100vw;
+        top: 0;
+        width: 220px !important;
+        min-width: 0 !important;
+        min-height: 100vh;
+        transition: left 0.3s;
+      }
+
+      #sidebar.open {
+        left: 0;
+      }
+
+   
+
+    
+    }
+
+    @media (min-width: 1024px) {
+      #sidebar {
+        left: 0;
+        width: 240px;
+        min-height: 100vh;
+      }
+
+      #mainContent {
+        margin-left: 240px;
+      }
+
+    }
+  </style>
+</head>
+
+<body class="flex bg-gray-900 text-gray-100 min-h-screen">
+
+  <!-- Sidebar Overlay (for mobile) -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="toggleSidebar(false)"></div>
+
+  <!-- Sidebar -->
+  <header id="sidebar"
+    class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-cyan-400 fixed flex flex-col items-center p-6 shadow-lg transition-all duration-300">
+    <button id="toggleSidebarBtn" type="button" class="toggle-btn text-4xl mb-6 cursor-pointer lg:hidden"
+      aria-label="Close Sidebar">×</button>
+    <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
+    <nav class="flex flex-col space-y-2 w-full px-2">
+      <a href="/admin_home" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🏠</span><span class="label">Home</span>
+      </a>
+      <a href="/navigation_status"
+        class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🤖</span><span class="label">Navigation</span>
+      </a>
+      <a href="/mapping" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🗺️</span><span class="label">Mapping</span>
+      </a>
+      <a href="/maintenance" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🔧</span><span class="label">Maintenance</span>
+      </a>
+      <a href="/alerts" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚠️</span><span class="label">Alerts</span>
+      </a>
+      <a href="{{ url_for('setting') }}"
+        class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚙️</span><span class="label">Settings</span>
+      </a>
+    </nav>
+    <div class="profile mt-auto w-full flex items-center p-3 rounded-lg bg-gray-800/50 hover:scale-105 transition">
+      <img src="/static/images_index/profile_avatar.png" alt="Profile"
+        class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold">Welcome, {{name}}</span>
+        <a href="/logout">
+          <button
+            class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 transition-all duration-300 pb-10">
+    <!-- Mobile Header Button -->
+    <div class="flex lg:hidden items-center p-4">
+      <button id="openSidebar" type="button" class="text-2xl text-cyan-400 mr-2" aria-label="Open Sidebar">☰</button>
+      <h1 class="text-xl font-bold text-[#22d3ee]">CHAKOR Mission Control</h1>
+    </div>
+    <!-- Header (Desktop) -->
+    <div class="hidden lg:flex justify-between items-start p-8 pb-2">
+      <div>
+        <h1 class="text-3xl font-bold text-[#22d3ee]">CHAKOR Mission Control</h1>
+        <p class="text-[#94a3b8] text-lg">Lunar Habitat Autonomous Maintenance System</p>
+      </div>
+      <div class="glass p-4 flex flex-col items-end">
+        <div class="flex items-center gap-2">
+          <svg width="24" height="24" fill="none" class="text-[#22d3ee]">
+            <path stroke="currentColor" stroke-width="2" d="M4.5 7.5l7 7m0 0l7-7m-7 7V3" />
+          </svg>
+          <span class="text-[#cbeafe] font-semibold">Mission Time</span>
+        </div>
+        <span id="missionTime" class="text-2xl font-mono text-[#cbeafe]">17:13:04</span>
+        <span class="text-xs font-mono text-[#94a3b8]">UTC</span>
+      </div>
+    </div>
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-2 md:px-8 py-2">
+      <!-- Left Column -->
+      <div class="flex flex-col gap-6">
+        <!-- CHAKOR Unit Status -->
+        <div class="glass p-4 md:p-6 flex flex-col">
+          <div class="flex justify-between items-start flex-wrap gap-2">
+            <h2 class="text-lg md:text-2xl font-bold text-[#38bdf8] flex items-center"><svg class="inline mr-2"
+                width="24" height="24" fill="none">
+                <path stroke="#38bdf8" stroke-width="2" d="M3 12l9-9 9 9-9 9-9-9z" />
+              </svg>CHAKOR Unit Status</h2>
+            <span class="badge badge-operational">OPERATIONAL</span>
+          </div>
+          <div class="mt-4 flex flex-col md:flex-row gap-4 items-center">
+            <div class="flex-1 w-full">
+              <div class="flex items-center justify-between mb-2">
+                <span>Battery Level</span>
+                <span id="batteryLevelText" class="font-bold">23%</span>
+              </div>
+              <div class="w-full h-3 bg-[#1e293b] rounded overflow-hidden">
+                <div id="batteryLevelBar" class="h-full bg-[#38bdf8] transition-all" style="width:23%"></div>
+              </div>
+              <div class="mt-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <svg width="20" height="20" fill="none">
+                    <circle cx="10" cy="10" r="8" stroke="#94a3b8" stroke-width="2" />
+                    <circle cx="10" cy="10" r="3" fill="#94a3b8" />
+                  </svg>
+                  <span>Current Location</span>
+                  <span class="font-bold text-[#38bdf8] ml-2">Habitat Section B - Corridor 2</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                  <svg width="20" height="20" fill="none">
+                    <rect x="4" y="4" width="12" height="12" rx="3" stroke="#94a3b8" stroke-width="2" />
+                    <rect x="9" y="9" width="2" height="2" rx="1" fill="#94a3b8" />
+                  </svg>
+                  <span>Operation Mode</span>
+                  <span class="badge badge-autopatrol">Autonomous Patrol</span>
+                </div>
+                <div class="mt-2 text-xs text-[#94a3b8]">
+                  Last Update: <span id="lastUpdate">2024-01-15 14:35:42 UTC</span>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=96&q=80"
+              alt="CHAKOR Robot" class="w-24 h-24 object-cover rounded-xl border-2 border-[#38bdf8]" />
+          </div>
+        </div>
+        <!-- Patrol Control -->
+        <div class="glass p-4 md:p-6 flex flex-col">
+          <div class="flex justify-between items-start flex-wrap gap-2">
+            <h2 class="text-lg md:text-2xl font-bold text-[#38bdf8] flex items-center"><svg class="inline mr-2"
+                width="24" height="24" fill="none">
+                <path stroke="#38bdf8" stroke-width="2" d="M4 12h16M12 4v16" />
+              </svg>Patrol Control</h2>
+            <span class="badge badge-active">ACTIVE</span>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <button id="btnPause"
+              class="bg-[#1e293b] text-[#cbeafe] px-4 md:px-6 py-2 rounded-l-lg font-bold hover:bg-[#334155] transition">Pause</button>
+            <button id="btnStop"
+              class="bg-[#ef4444] text-[#fff] px-4 md:px-6 py-2 font-bold hover:bg-[#dc2626] transition">Stop</button>
+            <button id="btnReset"
+              class="bg-[#1e293b] text-[#cbeafe] px-4 md:px-6 py-2 rounded-r-lg font-bold hover:bg-[#334155] transition">Reset</button>
+          </div>
+          <div class="mt-4">
+            <div class="flex items-center justify-between mb-2">
+              <span>Patrol Progress</span>
+              <span class="font-bold"><span id="waypointsCompleted">7</span>/12 waypoints</span>
+            </div>
+            <div class="w-full h-3 bg-[#1e293b] rounded overflow-hidden">
+              <div id="patrolProgressBar" class="h-full bg-[#38bdf8] transition-all" style="width:58%"></div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <span class="text-[#94a3b8]">Completed Rounds</span>
+                <div class="font-bold text-lg" id="completedRounds">3</div>
+              </div>
+              <div>
+                <span class="text-[#94a3b8]">Est. Time Remaining</span>
+                <div class="font-bold text-lg" id="estTimeRemaining">14:52</div>
+              </div>
+            </div>
+            <div class="mt-2 text-xs text-[#94a3b8]">Last Patrol Started: <span id="lastPatrolStarted">2024-01-15
+                13:45:00 UTC</span></div>
+            <div class="mt-4 flex gap-2">
+              <button id="btnEmergencyReturn"
+                class="bg-[#1e293b] text-[#cbeafe] px-4 py-2 font-bold rounded hover:bg-[#ef4444] hover:text-white transition">Emergency
+                Return</button>
+              <button id="btnManualOverride"
+                class="bg-[#1e293b] text-[#cbeafe] px-4 py-2 font-bold rounded hover:bg-[#38bdf8] hover:text-white transition">Manual
+                Override</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Middle Column -->
+      <div class="flex flex-col gap-6">
+        <!-- Environmental Monitor -->
+        <div class="glass p-4 md:p-6 flex flex-col">
+          <h2 class="text-lg md:text-2xl font-bold text-[#38bdf8] flex items-center"><svg class="inline mr-2" width="24"
+              height="24" fill="none">
+              <path stroke="#38bdf8" stroke-width="2" d="M12 2v20M2 12h20" />
+            </svg>Environmental Monitor</h2>
+          <div class="mt-4">
+            <div class="flex items-center justify-between">
+              <span>Temperature</span>
+              <span class="font-bold">22°C</span>
+              <span class="badge badge-normal">NORMAL</span>
+            </div>
+            <div class="w-full h-3 bg-[#1e293b] rounded overflow-hidden mb-2">
+              <div class="h-full bg-[#38bdf8]" style="width:73%"></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Oxygen Level</span>
+              <span class="font-bold">20.8%</span>
+              <span class="badge badge-normal">NORMAL</span>
+            </div>
+            <div class="w-full h-3 bg-[#1e293b] rounded overflow-hidden mb-2">
+              <div class="h-full bg-[#38bdf8]" style="width:21%"></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Humidity</span>
+              <span class="font-bold">45%</span>
+              <span class="badge badge-normal">NORMAL</span>
+            </div>
+            <div class="w-full h-3 bg-[#38bdf8] rounded overflow-hidden mb-2">
+              <div class="h-full bg-[#38bdf8]" style="width:45%"></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Pressure</span>
+              <span class="font-bold">101.3 kPa</span>
+              <span class="badge badge-normal">NORMAL</span>
+            </div>
+            <div class="w-full h-3 bg-[#1e293b] rounded overflow-hidden mb-2">
+              <div class="h-full bg-[#38bdf8]" style="width:85%"></div>
+            </div>
+          </div>
+        </div>
+        <!-- SLAM Navigation -->
+        <div class="glass p-4 md:p-6 flex flex-col">
+          <div class="flex justify-between items-start flex-wrap gap-2">
+            <h2 class="text-lg md:text-2xl font-bold text-[#38bdf8] flex items-center"><svg class="inline mr-2"
+                width="24" height="24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="2" />
+                <path stroke="#38bdf8" stroke-width="2" d="M12 6v6l4 2" />
+              </svg>SLAM Navigation</h2>
+            <span class="badge badge-active">ACTIVE</span>
+          </div>
+          <div class="mt-4 flex flex-col items-center">
+            <svg width="250" height="120" viewBox="0 0 250 120">
+              <circle cx="60" cy="80" r="16" fill="#ef4444" opacity="0.6" />
+              <circle cx="110" cy="60" r="12" fill="#ef4444" opacity="0.6" />
+              <circle cx="155" cy="100" r="8" fill="#ef4444" opacity="0.6" />
+              <line x1="50" y1="50" x2="200" y2="40" stroke="#38bdf8" stroke-dasharray="8 4" stroke-width="3" />
+              <circle cx="50" cy="50" r="10" fill="#38bdf8" />
+              <text x="35" y="42" font-size="14" fill="#38bdf8" font-weight="bold">CHAKOR</text>
+              <circle cx="200" cy="40" r="10" fill="#fbbf24" />
+              <text x="210" y="42" font-size="14" fill="#fbbf24" font-weight="bold">TARGET</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <!-- Right Column -->
+      <div class="flex flex-col gap-6">
+        <!-- Alert System -->
+        <div class="glass p-4 md:p-6 flex flex-col">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <h2 class="text-lg md:text-2xl font-bold text-[#38bdf8] flex items-center"><svg class="inline mr-2"
+                width="24" height="24" fill="none">
+                <path stroke="#38bdf8" stroke-width="2" d="M12 2l9 18H3L12 2z" />
+              </svg>Alert System</h2>
+            <span class="badge badge-warning">1 Warning</span>
+          </div>
+          <div class="mt-4 space-y-4">
+            <div class="glass bg-[#1e293b] p-3 flex flex-col gap-2">
+              <div class="flex justify-between items-center">
+                <span class="badge badge-warning">WARNING</span>
+                <button class="badge badge-ack" onclick="ackAlert('battery')">ACK</button>
+                <button class="badge badge-warning" onclick="removeAlert('battery')">✕</button>
+              </div>
+              <div class="text-[#fbbf24] font-bold">Low Battery Warning</div>
+              <div class="text-sm text-[#94a3b8]">CHAKOR battery level below 25%. Return to charging station
+                recommended.</div>
+              <div class="text-xs text-[#94a3b8]">2024-01-15 14:32:15 UTC</div>
+            </div>
+            <div class="glass bg-[#1e293b] p-3 flex flex-col gap-2">
+              <div class="flex justify-between items-center">
+                <span class="badge badge-info">INFO</span>
+                <button class="badge badge-ack" onclick="ackAlert('patrol')">ACK</button>
+                <button class="badge badge-warning" onclick="removeAlert('patrol')">✕</button>
+              </div>
+              <div class="text-[#38bdf8] font-bold">Patrol Completed</div>
+              <div class="text-sm text-[#94a3b8]">Routine patrol of Habitat Section A completed successfully.</div>
+              <div class="text-xs text-[#94a3b8]">2024-01-15 14:15:22 UTC</div>
+            </div>
+          </div>
+        </div>
+        <!-- System Overview -->
+        <div class="glass p-4 md:p-6 flex flex-col">
+          <h2 class="text-lg md:text-2xl font-bold text-[#38bdf8] flex items-center"><svg class="inline mr-2" width="24"
+              height="24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="#38bdf8" stroke-width="2" />
+              <path stroke="#38bdf8" stroke-width="2" d="M12 6v6l4 2" />
+            </svg>System Overview</h2>
+          <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
+            <div>
+              <span class="text-[#94a3b8]">Uptime</span>
+              <div class="font-bold text-[#4ade80] text-lg" id="uptime">72h 15m</div>
+            </div>
+            <div>
+              <span class="text-[#94a3b8]">Total Distance</span>
+              <div class="font-bold text-lg" id="totalDistance">2.4 km</div>
+            </div>
+            <div>
+              <span class="text-[#94a3b8]">Sensors Active</span>
+              <div class="font-bold text-[#4ade80] text-lg" id="sensorsActive">8/8</div>
+            </div>
+            <div>
+              <span class="text-[#94a3b8]">Data Points</span>
+              <div class="font-bold text-lg" id="dataPoints">15,247</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- AI Button (fixed, bottom right) -->
+    <div class="fixed right-4 bottom-4 z-20 ai">
+      <button class="ai-btn"><a href="/ai/ai.html"><img src="/static/AI_images/AI.png"
+            alt="image unavailable"></a></button>
+    </div>
+  </main>
+
+  <script>
+    // Mission Time clock
+    function updateMissionTime() {
+      const now = new Date();
+      const utcHours = now.getUTCHours().toString().padStart(2, '0');
+      const utcMinutes = now.getUTCMinutes().toString().padStart(2, '0');
+      const utcSeconds = now.getUTCSeconds().toString().padStart(2, '0');
+      const missionTimeEls = document.querySelectorAll('#missionTime');
+      missionTimeEls.forEach(el => el.innerText = `${utcHours}:${utcMinutes}:${utcSeconds}`);
+    }
+    setInterval(updateMissionTime, 1000);
+    updateMissionTime();
+
+    // Patrol Control Logic
+    let patrolActive = true, paused = false, waypoints = 12, completedWaypoints = 7, completedRounds = 3;
+    let patrolInterval = null, remainingSeconds = 14 * 60 + 52; // 14:52
+    function renderPatrol() {
+      document.getElementById('waypointsCompleted').innerText = completedWaypoints;
+      document.getElementById('patrolProgressBar').style.width = `${(completedWaypoints / waypoints) * 100}%`;
+      document.getElementById('completedRounds').innerText = completedRounds;
+      let mins = Math.floor(remainingSeconds / 60), secs = remainingSeconds % 60;
+      document.getElementById('estTimeRemaining').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    function startPatrol() {
+      patrolActive = true; paused = false;
+      patrolInterval = setInterval(() => {
+        if (!paused && completedWaypoints < waypoints) {
+          completedWaypoints++;
+          remainingSeconds -= Math.floor(Math.random() * 6 + 5);
+          if (completedWaypoints >= waypoints) {
+            completedRounds++; completedWaypoints = 0; remainingSeconds = 14 * 60 + 52;
+          }
+          renderPatrol();
+        }
+      }, 2000);
+    }
+    function stopPatrol() { patrolActive = false; paused = false; clearInterval(patrolInterval); }
+    function resetPatrol() { completedWaypoints = 0; completedRounds = 0; remainingSeconds = 14 * 60 + 52; renderPatrol(); }
+    document.getElementById('btnPause').onclick = () => { paused = !paused; document.getElementById('btnPause').innerText = paused ? 'Resume' : 'Pause'; };
+    document.getElementById('btnStop').onclick = () => { stopPatrol(); };
+    document.getElementById('btnReset').onclick = () => { resetPatrol(); };
+    document.getElementById('btnEmergencyReturn').onclick = () => { alert('Emergency Return initiated!'); stopPatrol(); };
+    document.getElementById('btnManualOverride').onclick = () => { alert('Manual Override activated!'); stopPatrol(); };
+    startPatrol(); renderPatrol();
+
+    // Alert System Logic
+    function ackAlert(type) { alert(`Alert acknowledged: ${type === 'battery' ? 'Low Battery Warning' : 'Patrol Completed'}`); }
+    function removeAlert(type) { const alertNode = event.target.closest('.glass'); alertNode.style.display = 'none'; }
+
+    // Sidebar toggle logic (for mobile/tablet)
+    function toggleSidebar(open) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      if (open) {
+        sidebar.classList.add('open');
+        overlay.style.display = 'block';
+      } else {
+        sidebar.classList.remove('open');
+        overlay.style.display = 'none';
+      }
+    }
+    document.getElementById('openSidebar').onclick = () => toggleSidebar(true);
+    document.getElementById('toggleSidebarBtn').onclick = () => toggleSidebar(false);
+    document.getElementById('overlay').onclick = () => toggleSidebar(false);
+  </script>
+</body>
+
+</html>

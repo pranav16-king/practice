@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LunaBot Mission Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/main/style.css">
+  <style>
+    /* Animated Background */
+    main {
+ 
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      animation: lunar-pan 40s ease-in-out infinite alternate;
+    }
+
+    @keyframes lunar-pan {
+      0% {
+        background-size: 100%;
+        background-position: center;
+      }
+
+      50% {
+        background-size: 115%;
+        background-position: top center;
+      }
+
+      100% {
+        background-size: 100%;
+        background-position: center;
+      }
+    }
+
+    /* Card animation */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Counter animation */
+    .counter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #66fcf1;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex bg-gray-900 text-gray-100 min-h-screen">
+
+  <!-- Sidebar -->
+  <header id="sidebar" class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-cyan-400 w-60 min-h-screen fixed flex flex-col items-center p-6 shadow-lg transition-all duration-300">
+    <button id="toggleSidebar" class="toggle-btn text-4xl mb-6 cursor-pointer">☰</button>
+    <h1 class="text-xl font-bold mb-8 text-center transition-all duration-300 header-title">🌙 LunaBot Admin</h1>
+    <div class="flex flex-col space-y-2 w-full px-2">
+      <a href="/admin_home" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🏠</span><span class="label">Home</span>
+      </a>
+      <a href="/navigation_status" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🤖</span><span class="label">Navigation</span>
+      </a>
+      <a href="/mapping" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🗺️</span><span class="label">Mapping</span>
+      </a>
+      <a href="/maintenance" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">🔧</span><span class="label">Maintenance</span>
+      </a>
+      <a href="/alerts" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚠️</span><span class="label">Alerts</span>
+      </a>
+      <a href="{{ url_for('setting') }}" class="nav-link flex items-center gap-3 px-3 py-2 rounded hover:bg-cyan-500/20 transition">
+        <span class="emoji">⚙️</span><span class="label">Settings</span>
+      </a>
+    </div>
+
+    <div class="profile mt-auto w-full flex items-center p-3 rounded-lg bg-gray-800/50 hover:scale-105 transition">
+      <img src="/static/images_index/profile_avatar.png" alt="Profile" class="w-12 h-12 rounded-full border-2 border-cyan-400 mr-3">
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold">Welcome, {{name}}</span>
+        <a href="/logout">
+          <button class="bg-cyan-700 text-white text-sm px-3 py-1 rounded mt-1 hover:bg-cyan-800 transition">Logout</button>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 ml-60 p-6 min-h-screen">
+    <h2 class="text-3xl font-bold mb-6 fade-in-up">🌕 Lunar Mission Control Dashboard</h2>
+
+    <!-- Grid of Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Navigation Status -->
+      <div class="bg-gray-800/50 p-5 rounded-xl shadow-lg fade-in-up">
+        <h3 class="text-xl font-semibold mb-3">🤖 Robot Navigation</h3>
+        <p class="text-gray-300">Current autonomous status of LunaBot.</p>
+        <div class="counter mt-4">Active</div>
+      </div>
+
+      <!-- Mapping -->
+      <div class="bg-gray-800/50 p-5 rounded-xl shadow-lg fade-in-up">
+        <h3 class="text-xl font-semibold mb-3">🗺️ Mapping & Localization</h3>
+        <p class="text-gray-300">Live habitat maps and sensor fusion data.</p>
+        <div class="counter mt-4">Updated</div>
+      </div>
+
+      <!-- Maintenance -->
+      <div class="bg-gray-800/50 p-5 rounded-xl shadow-lg fade-in-up">
+        <h3 class="text-xl font-semibold mb-3">🔧 Maintenance Monitoring</h3>
+        <p class="text-gray-300">Environmental parameters & routine checks.</p>
+        <div class="counter mt-4">Nominal</div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="bg-gray-800/50 p-5 rounded-xl shadow-lg fade-in-up">
+        <h3 class="text-xl font-semibold mb-3">⚠️ Alerts & Hazards</h3>
+        <p class="text-gray-300">Detected obstacles, anomalies, or alerts.</p>
+        <div class="counter mt-4">0 Active</div>
+      </div>
+
+      <!-- Environmental Monitoring -->
+      <div class="bg-gray-800/50 p-5 rounded-xl shadow-lg fade-in-up">
+        <h3 class="text-xl font-semibold mb-3">🌡️ Environment</h3>
+        <p class="text-gray-300">Temperature, O₂ levels, and habitat conditions.</p>
+        <div class="counter mt-4">Stable</div>
+      </div>
+
+      <!-- Robot Controls -->
+      <div class="bg-gray-800/50 p-5 rounded-xl shadow-lg fade-in-up">
+        <h3 class="text-xl font-semibold mb-3">🚀 Robot Controls</h3>
+        <p class="text-gray-300">Manual override or task assignment.</p>
+        <button class="mt-4 bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded transition">Access</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/main/script.js"></script>
+</body>
+
+</html>
+<script>
+  
+</script>
